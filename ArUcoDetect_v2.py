@@ -27,6 +27,8 @@ ARUCO_DICT = {
 }
 
 
+
+
 def aruco_display(corners, ids, rejected, image):
     marker_coordinates = []
     if len(corners) > 0:
@@ -48,10 +50,11 @@ def aruco_display(corners, ids, rejected, image):
 
             avg_x = sum_x / 4
             avg_y = sum_y / 4
+            
             print("Average x coordinate: {}".format(avg_x))
             print("Average y coordinate: {}".format(avg_y))
-
             (topLeft, topRight, bottomRight, bottomLeft) = corners
+
 
             topRight = (int(topRight[0]), int(topRight[1]))
             bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
@@ -67,9 +70,21 @@ def aruco_display(corners, ids, rejected, image):
             cY = int((topLeft[1] + bottomRight[1]) / 2.0)
             cv2.circle(image, (cX, cY), 4, (0, 0, 255), -1)
 
+            distance_x = 500-avg_x
+            distance_y = 500-avg_y
+
+
+            if avg_x > 500:               
+                print("Left: {}".format(distance_x*-1))
+            else:
+                print("Right: {}".format(distance_x))
+            if avg_y > 500:               
+                print("Down: {}".format(distance_y*-1))
+            else:
+                print("Up: {}".format(distance_y))
+
             cv2.putText(image, str(markerID), (topLeft[0], topLeft[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             print("[Inference] ArUco marker ID: {}".format(markerID))
-
     return image, marker_coordinates
 
 
@@ -86,7 +101,6 @@ while cap.isOpened():
     ret, img = cap.read()
     if not ret:
         break
-
     h, w, _ = img.shape
     width = 1000
     height = int(width * (h / w))
